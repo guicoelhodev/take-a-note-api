@@ -5,8 +5,8 @@ import { Field, ObjectType } from "type-graphql";
 @ObjectType()
 export class UserModel {
   @Field()
-  name: string;
+  name: String;
 
   @Field()
-  createdAt: Date;
+  id: String;
 }
