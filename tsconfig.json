@@ -2,11 +2,15 @@
   "compilerOptions": {
     "rootDirs": ["src"],
     "outDir": "dist",
-    "lib": ["es2020"],
-    "target": "es2020",
-    "module": "esnext",
+    "lib": ["es2021"],
+    "target": "es2021",
+    "module": "ES2022",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "types": ["node"]
+    "types": ["node"],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   }
 }
