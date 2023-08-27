@@ -1,6 +1,6 @@
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
-import { CreateUserInput } from "../dtos/inputs/createUserInput.ts";
 import { UserModel } from "../dtos/models/UserModel.ts";
+import { CreateUserInput } from "../dtos/inputs/CreateUserInput.ts";
 
 @Resolver()
 export class UsersResolver {
