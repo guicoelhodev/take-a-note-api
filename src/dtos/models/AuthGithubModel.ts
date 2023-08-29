@@ -6,29 +6,20 @@ export class AuthGithubModel {
   id: string;
 
   @Field()
-  aud: string;
+  created_at: string
 
   @Field()
-  role: string;
+  last_signed: string
+
+ @Field()
+  avatar_url: string;
 
   @Field()
   email: string;
 
   @Field()
-  email_confirmed_at: string;
+  full_name: string;
 
   @Field()
-  phone: string;
-
-  @Field()
-  confirmed_at: string;
-
-  @Field()
-  last_sign_in_at: string;
-
-  @Field()
-  created_at: string;
-
-  @Field()
-  updated_at: string;
+  user_name: string;
 }
