@@ -1,15 +1,12 @@
 import { Arg, Mutation, Resolver } from "type-graphql";
-import {
-  AuthJwtInput,
-  AuthProviderInput,
-} from "../../dtos/inputs/AuthProviderInput.ts";
 import { supabase } from "../../server.ts";
 import { AuthGithubModel } from "../../dtos/models/AuthGithubModel.ts";
+import { IAuthProviders } from "../../types/authProviders";
 
 @Resolver()
 export class AuthResolver {
   @Mutation(() => String!)
-  async sendJwtToken(@Arg("body") { provider }: AuthProviderInput) {
+  async sendJwtToken(@Arg("provider") provider: IAuthProviders) {
     const response = await supabase.auth.signInWithOAuth({
       provider: provider,
       options: {
@@ -26,7 +23,7 @@ export class AuthResolver {
   }
 
   @Mutation(() => AuthGithubModel)
-  async logIn(@Arg("body") { jwtToken }: AuthJwtInput) {
+  async logIn(@Arg("jwtToken") jwtToken: string) {
     let responseData: AuthGithubModel;
     const {
       data: { user },
@@ -37,18 +34,16 @@ export class AuthResolver {
       throw new Error(providerUserError.message);
     }
 
-    const {
-      data: userDB,
-      error: usersTableError,
-    } = await supabase.from("users").select("*").eq("id", user.id);
+    const { data: userDB, error: usersTableError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", user.id);
 
-    if(usersTableError){
+    if (usersTableError) {
       throw new Error(usersTableError.message);
     }
 
     if (!userDB.length) {
-
-      console.log('aqui criou')
       const { data: insertUser, error } = await supabase.from("users").insert({
         id: user.id,
         created_at: user.created_at,
@@ -59,15 +54,18 @@ export class AuthResolver {
         user_name: user.user_metadata.user_name,
       });
 
-      if(error){
+      if (error) {
         throw new Error(error.message);
       }
+
+      console.log("aqui criou");
       responseData = insertUser;
-    }else {
-      console.log('aqui mostrou')
+    } else {
+      console.log("aqui mostrou");
       responseData = userDB[0];
     }
-    
+
+    console.log(responseData);
     return responseData;
   }
 }
