@@ -1,16 +1,21 @@
-import { Arg, Mutation, Resolver } from "type-graphql";
+import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { supabase } from "../../server.ts";
 import { AuthGithubModel } from "../../dtos/models/AuthGithubModel.ts";
 import { AuthProviders } from "../../types/Auth";
 
 @Resolver()
 export class AuthResolver {
+  @Query(() => String!)
+  async hello() {
+    return "Hello World!";
+  }
+
   @Mutation(() => String!)
   async sendJwtToken(@Arg("provider") provider: AuthProviders) {
     const response = await supabase.auth.signInWithOAuth({
       provider: provider,
       options: {
-        scopes: "read:user",
+        scopes: provider === "github" ? "read:user" : "",
         redirectTo: `http://localhost:3000/login?provider=${provider}`,
       },
     });
@@ -53,6 +58,8 @@ export class AuthResolver {
         full_name: user.user_metadata.full_name,
         user_name: user.user_metadata.user_name,
       });
+
+      // google provider return name intead of user_name
 
       if (error) {
         throw new Error(error.message);
