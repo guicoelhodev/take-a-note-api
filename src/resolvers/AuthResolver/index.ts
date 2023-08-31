@@ -1,16 +1,17 @@
 import { Arg, Mutation, Resolver } from "type-graphql";
 import { supabase } from "../../server.ts";
 import { AuthGithubModel } from "../../dtos/models/AuthGithubModel.ts";
+import { AuthProviders } from "../../types/Auth";
 
 @Resolver()
 export class AuthResolver {
   @Mutation(() => String!)
-  async sendJwtToken(@Arg("provider") provider: "github") {
+  async sendJwtToken(@Arg("provider") provider: AuthProviders) {
     const response = await supabase.auth.signInWithOAuth({
       provider: provider,
       options: {
         scopes: "read:user",
-        redirectTo: "http://localhost:3000/login",
+        redirectTo: `http://localhost:3000/login?provider=${provider}`,
       },
     });
 
