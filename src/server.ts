@@ -9,25 +9,24 @@ import path, { dirname } from "node:path";
 import { fileURLToPath } from "url";
 import { createClient } from "@supabase/supabase-js";
 import { AuthResolver } from "./resolvers/AuthResolver/index.ts";
-import { UsersResolver } from "./resolvers/Users.ts";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export const supabase = createClient(
-  "https://nxwtqrdzqfrtutzajckq.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54d3RxcmR6cWZydHV0emFqY2txIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTMxNTcyMzYsImV4cCI6MjAwODczMzIzNn0.AZS37jxWOXCi3E1WC28JmJs2AnZzdw5DHLGHokHM370"
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
 );
 
 async function main() {
   const schema = await buildSchema({
-    resolvers: [AuthResolver, UsersResolver],
+    resolvers: [AuthResolver],
     emitSchemaFile: path.resolve(__dirname, "schema.gql"),
   });
   const server = new ApolloServer({ schema });
 
   const { url } = await startStandaloneServer(server, {
-    listen: { port: 8080 },
+    listen: { port: Number(process.env.APP_PORT) || 4000 },
   });
 
   console.log("Server running on:", url);
